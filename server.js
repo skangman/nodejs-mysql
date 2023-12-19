@@ -1,43 +1,22 @@
-const express = require('express')
-const mysql = require('mysql');
+// index.js
+
+const express = require('express');
+const bodyParser = require('body-parser');
+// const Userinfo = require('./routes/api');
+
+const api = require('./routes/api');
 
 const app = express();
-app.use(express.json());
-
-// MySQL Connection
-const connection = mysql.createConnection({
-    host: '...',
-    user: '...',
-    password: '...',
-    database: '...',
-    port: '3306'
-
-})
-
-connection.connect((err) => {
-    if (err) {
-        console.log('Error connecting to MySQL database = ', err)
-        return;
-    }
-    console.log('MySQL successfully connected!');
-})
+const port = 3000;
 
 
-// READ
-app.get("/read", async (req, res) => {
-    try {
-        connection.query("SELECT * FROM userinfo", (err, results, fields) => {
-            if (err) {
-                console.log(err);
-                return res.status(400).send();
-            }
-            res.status(200).json(results)
-        })
-    } catch(err) {
-        console.log(err);
-        return res.status(500).send();
-    }
-})
+// Middleware
+app.use(bodyParser.json());
 
+// Routes
+app.use('/api', api);
 
-app.listen(3000, () => console.log('Server is running on port 3000'));
+// Start the server
+app.listen(port, () => {
+    console.log(`Server is running on port ${port}`);
+});
